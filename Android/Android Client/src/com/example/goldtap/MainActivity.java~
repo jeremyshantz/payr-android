@@ -1,0 +1,135 @@
+package com.example.goldtap;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.charset.Charset;
+
+import org.json.JSONException;
+
+import com.example.goldtap.R;
+import com.example.goldtap.MainActivity.PlaceholderFragment;
+import com.example.goldtap.PayLoad;
+
+
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.app.Fragment;
+import android.content.Intent;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
+import android.os.Bundle; 
+import android.os.Parcelable;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.os.Build;
+import android.app.Activity;
+
+public class MainActivity extends Activity {
+
+    public void showInvoice(View view) {
+    	
+    	Intent intent = new Intent(this, InvoiceActivity.class);
+    	startActivity(intent);
+    }
+   	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new PlaceholderFragment())
+                    .commit();
+        }
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_main, container, false);
+        }
+    }
+<<<<<<< HEAD
+
+    //Button method
+    public void setText(View v) {
+        EditText ed = (EditText) findViewById(R.id.edtext);
+        TextView text = (TextView) findViewById(R.id.text);
+        text.setText(ed.getText());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //set Ndef message to send by beam
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        assert nfcAdapter != null;
+        nfcAdapter.setNdefPushMessageCallback(
+                new NfcAdapter.CreateNdefMessageCallback() {
+                    public NdefMessage createNdefMessage(NfcEvent event) {
+                        return createMessage();
+                    }
+                }, this);
+
+        //See if app got called by AndroidBeam intent.
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            extractPayload(getIntent());
+        }
+    }
+
+    /**
+     * Creates a new NdefMessage with payload of text field.
+     * @return NFC Data Exchange Format
+     */
+    private NdefMessage createMessage() {
+        String mimeType = "application/net.xerael.beam";
+        byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+
+        //GENERATE PAYLOAD
+        TextView text = (TextView) findViewById(R.id.text);
+        byte[] payLoad = text.getText().toString().getBytes();
+
+        //GENERATE NFC MESSAGE
+        return new NdefMessage(
+                new NdefRecord[]{
+                new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
+                        mimeBytes,
+                        null,
+                        payLoad),
+                NdefRecord.createApplicationRecord("net.xerael.beam")
+        });
+=======
+    
+    public void setPayload(View view) throws IOException, JSONException{
+    	
+    	PayLoad devtest = new PayLoad("Presh", "500");
+    	
+    	Intent intent = new Intent(this, NFCActivity.class);
+    	intent.putExtra("devpayload", PayLoad.serialize(devtest.getPayload().toString()));
+    	startActivity(intent);
+>>>>>>> 376ce389aec9f059ae27b70e61a31cef842410e9
+    }
+    
+    public void setSplit(View view){
+    	Intent intent = new Intent(this, SplitActivity.class);
+    	startActivity(intent);
+    }
+
+}
